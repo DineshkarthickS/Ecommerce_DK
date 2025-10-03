@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="ecomm.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <ul class="menu-items">
+                <li><a href="ecomm.html">Home</a></li>
+                <li><a href="#">Shop</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="cart.html">Cart</a></li>
+            </ul>
+            <div class="text">
+                <h1><span>W</span>AX FASHION...</h1>
+            </div>
+        </div>
+    </nav>
+    <section class="cart-section container">
+        <h2>Your Cart</h2>
+        <table id="cart-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Cart items will be injected here -->
+            </tbody>
+        </table>
+        <div id="cart-summary">
+            <h3 id="cart-total"></h3>
+            <button onclick="clearCart()">Clear Cart</button>
+        </div>
+    </section>
+    <script>
+    // Load cart from localStorage
+    function loadCart() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const tbody = document.querySelector('#cart-table tbody');
+        tbody.innerHTML = '';
+        let grandTotal = 0;
+        cart.forEach((item, idx) => {
+            const row = document.createElement('tr');
+            const total = (item.price * item.quantity).toFixed(2);
+            grandTotal += parseFloat(total);
+            row.innerHTML = `
+                <td>${item.name}</td>
+                <td>$${item.price.toFixed(2)}</td>
+                <td>${item.quantity}</td>
+                <td>$${total}</td>
+                <td><button onclick="removeItem(${idx})">Remove</button></td>
+            `;
+            tbody.appendChild(row);
+        });
+        document.getElementById('cart-total').textContent = 'Grand Total: $' + grandTotal.toFixed(2);
+    }
+
+    // Remove item from cart
+    function removeItem(index) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        loadCart();
+    }
+
+    // Clear cart
+    function clearCart() {
+        localStorage.removeItem('cart');
+        loadCart();
+    }
+
+    // On page load
+    document.addEventListener('DOMContentLoaded', loadCart);
+    </script>
+</body>
+</html>
